@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/eight-puzzle-search-develop.iml" filepath="$PROJECT_DIR$/eight-puzzle-search-develop.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/AI_Eight_Puzzle_Program.iml" filepath="$PROJECT_DIR$/AI_Eight_Puzzle_Program.iml" />
+>>>>>>> 75e35790d317beeb9b81b87f2f9df1c62541ee72
     </modules>
   </component>
 </project>
