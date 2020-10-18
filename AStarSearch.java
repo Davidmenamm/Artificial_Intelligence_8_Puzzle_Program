@@ -1,11 +1,41 @@
-import java.util.Scanner;
-import java.util.Stack;
-import java.util.Queue;
-import java.util.LinkedList;
-import java.util.ArrayList;
+package com.company;
+
+import java.util.*;
 
 public class AStarSearch{
 	private static boolean heuristic = true;
+	private ArrayList<AStarState> randBoards;
+	private double [] learnedCoeff;
+
+	private ArrayList<AStarState> genBoards(){
+		// Generate 100 Random boards, that are able to be solved
+		Fisher_Yates_Array_Shuffling fyas = new Fisher_Yates_Array_Shuffling();
+		ArrayList<AStarState> randBoards = new ArrayList<>();
+		int numBoards = 100;
+		// Init board of all, 0,1,2,3,4,5,6,7,8
+		int numTiles = 9;
+		Integer[] initBoard = new Integer[numTiles];
+		for (int i = 0; i < numTiles; i++) {
+			initBoard[i] = i;
+		}
+
+		for (int i = 0; i < numBoards; i++){
+			// Get array of int to initiate a new AStarState
+			Integer[] shuffledArrayInt = fyas.fisherYatesShuffling(initBoard, numTiles);
+			int[] shuffledArray = Arrays.stream(shuffledArrayInt).mapToInt(Integer::intValue).toArray();
+			AStarState newBoardInitState = new AStarState(shuffledArray);
+			randBoards.add(newBoardInitState);
+		}
+
+		return randBoards;
+	}
+
+	/**
+	 * Constructor
+	 */
+	public AStarSearch(){
+		this.randBoards = genBoards();
+	}
 
 	public static void main(String[] args){
 		AStarSearch program;
@@ -25,6 +55,25 @@ public class AStarSearch{
 
 		solvePuzzle(initialBoard,h);
 	}
+
+
+	/**
+	 * Calculate the coefficients for the learned heuristic
+	 */
+	public void getCoefficients(){
+		// get x1, and x2 metrics for each of the random boards
+		int numBoards = 100;
+		double [] x1Arr = new double[numBoards];
+		double [] x2Arr = new double[numBoards];
+		 // double [] firstCol = n
+		for(int i = 0; i < numBoards; i++){
+			AStarState currentBoard = this.randBoards.get(0);
+			x1Arr[i] = currentBoard.getX1Idx();
+			x2Arr[i] = currentBoard.getX2Idx();
+		}
+
+	}
+
 
 	/**
 	 * Method that solves the puzzle

@@ -1,5 +1,8 @@
+package com.company;
+
 import java.util.Arrays;
 import java.util.ArrayList;
+//import javafx.util;
 
 public class AStarState{
 
@@ -29,6 +32,62 @@ public class AStarState{
 	 */
 	public int getManhattanDistance(){
 		return manhattanDistance;
+	}
+
+	/**
+	 * Calculate x2, which is the number of pairs horizontal and vertical
+	 * that are in the initial board, but not in the goal board
+	 */
+	public int getX2Idx() {
+		ArrayList<ArrayList<Integer>> adjacentTilesCurrent = new ArrayList<ArrayList<Integer>>();
+		ArrayList<ArrayList<Integer>> adjacentTilesGoal = new ArrayList<ArrayList<Integer>>();
+		int count = 0;
+		for (int i = 0; i < currentBoard.length; i++) {
+			if (i != 2 && i != 5 && i != 8) {
+				// pair in current board
+				ArrayList<Integer> pairCurrent = new ArrayList<>();
+				pairCurrent.add(currentBoard[i]);
+				pairCurrent.add(currentBoard[i + 1]);
+				adjacentTilesCurrent.add(pairCurrent);
+				// pairs for goal state
+				ArrayList<Integer> pairGoal = new ArrayList<>();
+				pairGoal.add(goalState[i]);
+				pairGoal.add(goalState[i + 1]);
+				adjacentTilesGoal.add(pairGoal);
+			}
+			if (i < 5) {
+				// pair in current board
+				ArrayList<Integer> pairCurrent = new ArrayList<>();
+				pairCurrent.add(currentBoard[i]);
+				pairCurrent.add(currentBoard[i + 3]);
+				adjacentTilesCurrent.add(pairCurrent);
+				// pairs for goal state
+				ArrayList<Integer> pairGoal = new ArrayList<>();
+				pairGoal.add(goalState[i]);
+				pairGoal.add(goalState[i + 3]);
+				adjacentTilesGoal.add(pairGoal);
+			}
+		}
+		for (int i = 0; i < currentBoard.length; i++) {
+			if (adjacentTilesCurrent.get(i) != adjacentTilesGoal.get(i)) {
+				++count;
+			}
+		}
+		return count;
+	}
+
+	/**
+	 * Calculate x1, the number of tiles not in place, in other words
+	 * 	they are not in the ideal position 1,2,3,4,5,6,7,8.
+	 */
+	public int getX1Idx(){
+		int count = 0;
+		for (int i = 0; i < currentBoard.length; i++){
+			if (currentBoard[i] != goalState[i]){
+				count++;
+			}
+		}
+		return count++;
 	}
 
 	/*
