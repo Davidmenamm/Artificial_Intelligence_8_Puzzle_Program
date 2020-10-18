@@ -17,6 +17,9 @@ public class PuzzleSearch {
 
 	public void run() {
 		Scanner sc = new Scanner(System.in);
+		// test printing
+		System.out.println("sc is ");
+		System.out.println(sc);
 		int choice = 0;
 		System.out.println("------------------");
 		System.out.println("8 Puzzle Search");
@@ -40,19 +43,24 @@ public class PuzzleSearch {
 	}
 
 	public void determineSearchAlgo(int c) throws IOException {
+		// initial board
+		// Scanner kbd = new Scanner(System.in);
+		int[] initialBoard = new int[]
+				{ 3,2,0,6,1,5,7,4,8 };
+
+		// select option
 		switch (c) {
 		case 1:
-			new AStarSearch().run(false);
+			new AStarSearch().run(initialBoard, 1);
 			break;
 		case 2:
-			new AStarSearch().run(true);
+			new AStarSearch().run(initialBoard, 2);
 			break;
 		case 3:
-			//Pending
-
+			new AStarSearch().run(initialBoard, 3);
 			break;
 		default:
-			System.out.println("Please enter one of the choices (1-5).");
+			System.out.println("Please enter one of the choices (1-3).");
 		}
 	}
 

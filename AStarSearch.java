@@ -3,9 +3,7 @@ package com.company;
 import java.util.*;
 
 public class AStarSearch{
-	private static boolean heuristic = true;
-	private ArrayList<AStarState> randBoards;
-	private double [] learnedCoeff;
+	private static ArrayList<AStarState> randBoards;
 
 	private ArrayList<AStarState> genBoards(){
 		// Generate 100 Random boards, that are able to be solved
@@ -18,7 +16,7 @@ public class AStarSearch{
 		for (int i = 0; i < numTiles; i++) {
 			initBoard[i] = i;
 		}
-
+		// Add generated boards to list
 		for (int i = 0; i < numBoards; i++){
 			// Get array of int to initiate a new AStarState
 			Integer[] shuffledArrayInt = fyas.fisherYatesShuffling(initBoard, numTiles);
@@ -37,48 +35,80 @@ public class AStarSearch{
 		this.randBoards = genBoards();
 	}
 
+	/**
+	 * Main method to run and test program
+	 * @param args
+	 */
 	public static void main(String[] args){
 		AStarSearch program;
 		try {
 			program = new AStarSearch();
-			program.run(heuristic);
+			Scanner kbd = new Scanner(System.in);
+			int[] initialBoard = new int[]
+			{ 3,2,0,6,1,5,7,4,8 };
+			program.run(initialBoard, 2);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
 
-	public void run(boolean h){
-		Scanner kbd = new Scanner(System.in);
-		int[] initialBoard = new int[]
-		{ 3,2,0,6,1,5,7,4,8 };
-
-		solvePuzzle(initialBoard,h);
+	/**
+	 * to run the the algorithm
+	 * @param initialBoard
+	 * @param option
+	 */
+	public void run(int[] initialBoard, int option){
+		solvePuzzle(initialBoard,option);
 	}
 
 
 	/**
 	 * Calculate the coefficients for the learned heuristic
 	 */
-	public void getCoefficients(){
+	private static double [] getCoefficients(){
 		// get x1, and x2 metrics for each of the random boards
 		int numBoards = 100;
 		double [] x1Arr = new double[numBoards];
 		double [] x2Arr = new double[numBoards];
-		 // double [] firstCol = n
+		double [] yMDistArr = new double[numBoards];
 		for(int i = 0; i < numBoards; i++){
-			AStarState currentBoard = this.randBoards.get(0);
-			x1Arr[i] = currentBoard.getX1Idx();
-			x2Arr[i] = currentBoard.getX2Idx();
+			AStarState currentBoard = randBoards.get(0);
+			x1Arr[i] = currentBoard.getX1Idx(); // x1 of all boards
+			x2Arr[i] = currentBoard.getX2Idx(); // x2 of all boards
+			yMDistArr[i] = currentBoard.getManhattanDistance(); // m distance of all boards
 		}
+		// generate Matrix
+		Regresion matrix = new Regresion(x1Arr, x2Arr, yMDistArr);
+		// get betta coefficients for learned heuristic algorithm
+		double [] betaArr = new double[3];
+		betaArr = matrix.getCoefficients();
+		// return
+		return betaArr;
+	}
 
+	/**
+	 * Learned heuristic: This method uses the beta coefficients for the learned heuristic
+	 * which was obtained with operations of 100 random boards.
+	 * The formula it uses for the learned heuristic which is a regresion is
+	 * learned heuristic = Β0 + Β1*x1 + Β2*x2, where B is are the beta coefficients
+	 */
+	public static double learnedHeuristic(AStarState currState){
+		// get betta coefficients
+		double [] betaArr = getCoefficients();
+		double currX1 = currState.getX1Idx();
+		double currX2 = currState.getX2Idx();
+		// apply formula regression to get heuristic
+		double lh = betaArr[0]+betaArr[1]*currX1+betaArr[2]*currX2;
+		// return
+		return lh;
 	}
 
 
 	/**
 	 * Method that solves the puzzle
 	 */
-	public static void solvePuzzle(int[] board, boolean heuristic){
+	public static void solvePuzzle(int[] board, int option){
 		Queue<Node> frontier = new LinkedList<Node>();
 		Node initial = new Node(new AStarState(board));
 		frontier.add(initial);
@@ -93,7 +123,8 @@ public class AStarSearch{
 				spaceComplexity = Math.max(frontier.size(), spaceComplexity);//Gets the maximum size of the frontier
 
 				Node visitedNode;
-				if(heuristic == false){
+				// option for not using a heuristic
+				if(option == 1){
 					for (int i = 0; i < tempChildren.size(); i++){
 						visitedNode = new Node(currentNode,
 								tempChildren.get(i),
@@ -104,8 +135,8 @@ public class AStarSearch{
 						}
 					}
 				}
-
-				if(heuristic == true){
+				// option for manhattan distance heuristic
+				if(option == 2){
 					for (int i = 0; i < tempChildren.size(); i++){
 						visitedNode = new Node(currentNode,
 									tempChildren.get(i),
@@ -114,6 +145,18 @@ public class AStarSearch{
 						if (!AStarState.isRepeatedState(visitedNode)){
 							nodeChildren.add(visitedNode);
 
+						}
+					}
+				}
+				// option for learned heuristic
+				if(option == 3){
+					for (int i = 0; i < tempChildren.size(); i++){
+						visitedNode = new Node(currentNode,
+								tempChildren.get(i),
+								currentNode.getActualCost() + 1,
+								learnedHeuristic((AStarState)tempChildren.get(i)));
+						if (!AStarState.isRepeatedState(visitedNode)){
+							nodeChildren.add(visitedNode);
 						}
 					}
 				}

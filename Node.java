@@ -1,3 +1,5 @@
+package com.company;
+
 public class Node{
 	private AStarState currentState;
 	private Node parent;
