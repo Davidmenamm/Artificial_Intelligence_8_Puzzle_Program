@@ -1,7 +1,8 @@
 package com.company;
 
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 //import javafx.util;
 
 public class AStarState{
@@ -9,7 +10,7 @@ public class AStarState{
 	private int sizeOfPuzzle = 9;
 	private int manhattanDistance = 0;
 	private int[] goalState = new int[]
-	{ 1, 2, 5, 3, 4, 6, 7, 8, 0 };
+	{ 1, 2, 3, 4, 5, 6, 7, 8, 0 };
 	private int[] currentBoard;
 
 	/**
@@ -41,6 +42,12 @@ public class AStarState{
 	public int getX2Idx() {
 		ArrayList<ArrayList<Integer>> adjacentTilesCurrent = new ArrayList<ArrayList<Integer>>();
 		ArrayList<ArrayList<Integer>> adjacentTilesGoal = new ArrayList<ArrayList<Integer>>();
+//		System.out.println("CurrentBoard");
+//		String currBoard = Arrays.toString(currentBoard);
+//		System.out.println(currBoard);
+//		System.out.println("goalState");
+//		String goalBoard = Arrays.toString(goalState);
+//		System.out.println(goalBoard);
 		int count = 0;
 		for (int i = 0; i < currentBoard.length; i++) {
 			if (i != 2 && i != 5 && i != 8) {
@@ -51,6 +58,10 @@ public class AStarState{
 				adjacentTilesCurrent.add(pairCurrent);
 				// pairs for goal state
 				ArrayList<Integer> pairGoal = new ArrayList<>();
+//				System.out.println("goalState[i] Horizontal");
+//				System.out.println(goalState[i]);
+//				System.out.println("goalState[i+1]");
+//				System.out.println(goalState[i+1]);
 				pairGoal.add(goalState[i]);
 				pairGoal.add(goalState[i + 1]);
 				adjacentTilesGoal.add(pairGoal);
@@ -63,15 +74,61 @@ public class AStarState{
 				adjacentTilesCurrent.add(pairCurrent);
 				// pairs for goal state
 				ArrayList<Integer> pairGoal = new ArrayList<>();
+//				System.out.println();
+//				System.out.println("goalState[i] Vertical");
+//				System.out.println(goalState[i]);
+//				System.out.println("goalState[i+3]");
+//				System.out.println(goalState[i+3]);
 				pairGoal.add(goalState[i]);
 				pairGoal.add(goalState[i + 3]);
 				adjacentTilesGoal.add(pairGoal);
 			}
 		}
-		for (int i = 0; i < currentBoard.length; i++) {
-			if (adjacentTilesCurrent.get(i) != adjacentTilesGoal.get(i)) {
-				++count;
+		String adjCurrStr = Arrays.toString(adjacentTilesCurrent.toArray());
+		String adjGoalStr = Arrays.toString(adjacentTilesGoal.toArray());
+//		System.out.println("adjacentTilesCurrent");
+//		System.out.println(adjCurrStr);
+//		System.out.println("adjGoalStr");
+//		System.out.println(adjGoalStr);
+
+		for (int i = 0; i < adjacentTilesCurrent.size(); i++) {
+			boolean valid = true; // to avoid repeated comparisons
+			for (int j = 0; j < adjacentTilesGoal.size(); j++){
+				ArrayList<Integer> adjCurr = adjacentTilesCurrent.get(i);
+				ArrayList<Integer> adjGoal = adjacentTilesGoal.get(j);
+				// inverse of goal tile
+				ArrayList<Integer> adjGoalInv = new ArrayList<>();
+				adjGoalInv.add(adjGoal.get(1));
+				adjGoalInv.add(adjGoal.get(0));
+
+				// test printing
+//				System.out.println("adjacentTilesCurrent.get(i)");
+//				System.out.println(adjacentTilesCurrent.get(i));
+//				System.out.println("adjacentTilesGoal.get(i)");
+//				System.out.println(adjacentTilesGoal.get(j));
+//				System.out.println("adjacentTilesGoal.get(i) INVERSE");
+//				String inverse = Arrays.toString(adjGoalInv.toArray());
+//				System.out.println(adjGoalInv);
+
+				// compare both, including goals inverse pairs
+				if (adjCurr.equals(adjGoal) || adjCurr.equals(adjGoalInv))
+				{
+//					System.out.println("INSIDE!!");
+					// if different
+					valid = false;
+
+				}
 			}
+			if (valid){
+				count++;
+			}
+//			if (adjacentTilesCurrent.get(i) != adjacentTilesGoal.get(i)) {
+//				System.out.println("adjacentTilesCurrent.get(i)");
+//				System.out.println(adjacentTilesCurrent.get(i));
+//				System.out.println("adjacentTilesGoal.get(i)");
+//				System.out.println(adjacentTilesGoal.get(i));
+//				++count;
+//			}
 		}
 		return count;
 	}

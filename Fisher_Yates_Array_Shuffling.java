@@ -21,19 +21,30 @@ public class Fisher_Yates_Array_Shuffling {
     static Integer[] fisherYatesShuffling(Integer[] arr, int n) {
         Integer[] a = new Integer[n];
         int[] ind = new int[n];
-        for (int i = 0; i < n; i++) {
-            ind[i] = 0;
-        }
-        int index;
-        Random rand = new Random();
-        for (int i = 0; i < n; i++) {
-            do {
-                index = rand.nextInt(n);
-            } while (ind[index] != 0);
+        int count = 0; // avoid first case
+        do {
+            for (int i = 0; i < n; i++) {
+                ind[i] = 0;
+            }
+            int index;
+            Random rand = new Random();
+            for (int i = 0; i < n; i++) {
+                do {
+                    index = rand.nextInt(n);
+                } while (ind[index] != 0);
 
-            ind[index] = 1;
-            a[i] = arr[index];
-        }
+                ind[index] = 1;
+                a[i] = arr[index];
+            }
+            // test printing
+            System.out.println("getInvCount(a,9)");
+            System.out.println(getInvCount(a,9));
+
+            // next count
+            count++;
+        } while(getInvCount(a,9) % 2 != 0);
+
+        System.out.println("ADDED!");
         return a;
     }
 

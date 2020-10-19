@@ -17,9 +17,6 @@ public class PuzzleSearch {
 
 	public void run() {
 		Scanner sc = new Scanner(System.in);
-		// test printing
-		System.out.println("sc is ");
-		System.out.println(sc);
 		int choice = 0;
 		System.out.println("------------------");
 		System.out.println("8 Puzzle Search");
@@ -46,7 +43,7 @@ public class PuzzleSearch {
 		// initial board
 		// Scanner kbd = new Scanner(System.in);
 		int[] initialBoard = new int[]
-				{ 3,2,0,6,1,5,7,4,8 };
+				{ 3,1,2,4,6,0,7,5,8 };
 
 		// select option
 		switch (c) {
